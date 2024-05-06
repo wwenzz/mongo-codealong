@@ -72,6 +72,14 @@ app.get("/authors", async (req, res) => {
   res.json(authors);
 });
 
+app.get("/authors/:id/books", async (req, res) => {
+  const author = await Author.findById(req.params.id);
+  console.log(author?._id);
+  const books = await Book.find({ author: author?._id });
+
+  res.json(books);
+});
+
 app.get("/books", async (req, res) => {
   const books = await Book.find().populate("author");
   res.json(books);
