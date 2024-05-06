@@ -3,8 +3,22 @@ import express from "express";
 import mongoose from "mongoose";
 
 const mongoUrl = process.env.MONGO_URL || "mongodb://localhost/books";
-mongoose.connect(mongoUrl, { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect(mongoUrl);
 mongoose.Promise = Promise;
+
+const Author = mongoose.model("Author", {
+  name: String,
+});
+
+const seedDatabase = async () => {
+  const orwell = new Author({ name: "George Orwell" });
+  await orwell.save();
+
+  const rowling = new Author({ name: "J.K. Rowling" });
+  await rowling.save();
+};
+
+seedDatabase();
 // Defines the port the app will run on. Defaults to 8080, but can be overridden
 // when starting the server. Example command to overwrite PORT env variable value:
 // PORT=9000 npm start
@@ -20,6 +34,10 @@ app.get("/", (req, res) => {
   res.send("Hello Technigo!");
 });
 
+app.get("/authors", async (req, res) => {
+  const authors = await Author.find();
+  res.json(authors);
+});
 // Start the server
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
