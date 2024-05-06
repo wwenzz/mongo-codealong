@@ -71,6 +71,12 @@ app.get("/authors", async (req, res) => {
   const authors = await Author.find();
   res.json(authors);
 });
+
+app.get("/books", async (req, res) => {
+  const books = await Book.find().populate("author");
+  res.json(books);
+});
+
 // Start the server
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
