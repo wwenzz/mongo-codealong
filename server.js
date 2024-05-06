@@ -10,15 +10,18 @@ const Author = mongoose.model("Author", {
   name: String,
 });
 
-const seedDatabase = async () => {
-  const orwell = new Author({ name: "George Orwell" });
-  await orwell.save();
+if (process.env.RESET_DATABASE) {
+  const seedDatabase = async () => {
+    await Author.deleteMany();
+    const orwell = new Author({ name: "George Orwell" });
+    await orwell.save();
 
-  const rowling = new Author({ name: "J.K. Rowling" });
-  await rowling.save();
-};
+    const rowling = new Author({ name: "J.K. Rowling" });
+    await rowling.save();
+  };
+  seedDatabase();
+}
 
-seedDatabase();
 // Defines the port the app will run on. Defaults to 8080, but can be overridden
 // when starting the server. Example command to overwrite PORT env variable value:
 // PORT=9000 npm start
