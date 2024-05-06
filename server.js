@@ -10,14 +10,44 @@ const Author = mongoose.model("Author", {
   name: String,
 });
 
+const Book = mongoose.model("Book", {
+  title: String,
+  author: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Author",
+  },
+});
+
 if (process.env.RESET_DATABASE) {
   const seedDatabase = async () => {
     await Author.deleteMany();
+    await Book.deleteMany();
     const orwell = new Author({ name: "George Orwell" });
     await orwell.save();
 
     const rowling = new Author({ name: "J.K. Rowling" });
     await rowling.save();
+
+    await new Book({
+      title: "Harry Potter and the Philosopher's Stone",
+      author: rowling,
+    }).save();
+    await new Book({
+      title: "Harry Potter and the Deathly Hallows",
+      author: rowling,
+    }).save();
+    await new Book({
+      title: "Fantastic Beasts and Where to Find Them",
+      author: rowling,
+    }).save();
+    await new Book({
+      title: "1984",
+      author: orwell,
+    }).save();
+    await new Book({
+      title: "Animal Farm",
+      author: orwell,
+    }).save();
   };
   seedDatabase();
 }
